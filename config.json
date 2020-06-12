@@ -1,0 +1,4 @@
+{
+"DATA_INPUT_FILEPATH" : "data/data.json",
+"DATA_OUTPUT_FILEPATH" : "build/data_output.json"
+}

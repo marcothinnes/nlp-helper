@@ -2,6 +2,20 @@ from pathlib import Path
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
+def read_configfile(filepath: Path) -> dict:
+    """
+    Reads in the config file from root directory
+    Returns:
+        returns the json file storing configuration
+    """
+    import json
+    CONFIG_FILEPATH = Path(filepath)
+
+    with open(CONFIG_FILEPATH, 'r', encoding='utf-8') as fp:
+        config_dict = json.load(fp)
+
+    return config_dict
+
 def load_spacy() -> None:
     """
     This loads spacy and language models 
@@ -96,7 +110,8 @@ def import_data(filepath: Path) -> None:
 
 
 def main() -> None:
-    df = import_data(filepath='data/data.json')
+    configdict = read_configfile('config.json')
+    df = import_data(filepath=configdict['DATA_INPUT_FILEPATH'])
     nlp_model_de = load_spacy()
 
     split_text_into_columns(nlp_model_de=nlp_model_de, df=df)
