@@ -1,4 +1,7 @@
 {
-"DATA_INPUT_FILEPATH" : "data/data.json",
-"DATA_OUTPUT_FILEPATH" : "build/data_output.json"
+"DATA_INPUT_FILEPATH_CSV" : "data/data.csv",
+"DATA_INPUT_FILEPATH_JSON" : "data/data.json",
+"DATA_OUTPUT_FILEPATH_CSV" : "build/data_output.csv",
+"DATA_OUTPUT_FILEPATH_JSON" : "build/data_output.json",
+"LANGUAGE_MODELS" : "de_core_news_sm"
 }
