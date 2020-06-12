@@ -11,6 +11,11 @@ First you want to install pipenv:
 $ brew install pipenv
 ```
 
+Then you start the environment:
+```shell
+$ pipenv install
+```
+
 
 ---
 
