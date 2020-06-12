@@ -1,4 +1,6 @@
 from pathlib import Path
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 def load_spacy() -> None:
     """
@@ -10,9 +12,10 @@ def load_spacy() -> None:
     import spacy
     import de_core_news_sm
 
-    nlp_model_de = de_core_news_sm.load()
+    # Only import the elements you need to speed up
+    nlp_model_de = de_core_news_sm.load(disable=['ner', 'tagger'])
 
-    print(nlp_model_de.pipe_names)
+    logging.info(nlp_model_de.pipe_names)
 
     return nlp_model_de
 
@@ -49,14 +52,13 @@ def split_text_into_columns(nlp_model_de, df) -> None:
 
             #print(list1)
             row['sentences'] = list1
-            print(row['sentences'])
+            #print(row['sentences'])
         
-        print('____')
-        print(df['sentences'])
+        logging.info(df['sentences'])
 
         dfcolumns = pd.DataFrame(df['sentences'].values.tolist()).add_prefix('column_')
 
-        print(dfcolumns)
+        #print(dfcolumns)
 
         # Apply Version is slower:
         # expand df.sentences into its own dataframe
@@ -68,8 +70,7 @@ def split_text_into_columns(nlp_model_de, df) -> None:
         # join the column dataframe back to the original dataframe
         dfconcat = pd.concat([df[:], dfcolumns[:]], axis=1)
 
-        print(dfconcat)
-        print(dfconcat.info())
+        logging.info(dfconcat)
 
         return dfconcat
 
