@@ -16,7 +16,7 @@ def read_configfile(filepath: Path) -> dict:
 
     return config_dict
 
-def load_spacy() -> None:
+def load_spacy(language_models) -> None:
     """
     This loads spacy and language models 
 
@@ -24,22 +24,31 @@ def load_spacy() -> None:
         Spacy language models: [description]
     """
     import spacy
-    import de_core_news_sm
+    import importlib
 
-    # Only import the elements you need to speed up
-    nlp_model_de = de_core_news_sm.load(disable=['ner', 'tagger'])
+    nlp_models = []
+    nlp_models.clear()
 
-    logging.info(nlp_model_de.pipe_names)
+    for language_model_name in language_models:
+        language_model = importlib.import_module(language_model_name)
 
-    return nlp_model_de
+        # Only import the elements you need to speed up
+        nlp_model = language_model.load(disable=['ner', 'tagger'])
+        logging.info(nlp_model)
+        logging.info(nlp_model.pipe_names)
+
+        nlp_models.append(nlp_model)
+
+    logging.info(nlp_models)
+    return nlp_models
 
 
-def split_text_into_columns(nlp_model_de, df) -> None:
+def split_text_into_columns(nlp_models, df) -> None:
     """
     Takes Text Content of one DataFrame Cell and splits into multiple Columns
 
     Args:
-        nlp_model_de (spacy model): [description]
+        nlp_models (list): List of Spacy Language Models
         df (Pandas DataFrame): [description]
 
     Returns:
@@ -47,12 +56,11 @@ def split_text_into_columns(nlp_model_de, df) -> None:
     """
     import pandas as pd
 
-    nlp_model_de = nlp_model_de
+    nlp_models = nlp_models
 
     df['sentences'] = 'default value'
 
-    for nlp_model in [nlp_model_de]:
-        
+    for nlp_model in nlp_models:
 
         for index, row in df.iterrows():
 
@@ -110,14 +118,18 @@ def import_data(filepath: Path) -> None:
 
 
 def main() -> None:
-    configdict = read_configfile('config.json')
-    df = import_data(filepath=configdict['DATA_INPUT_FILEPATH'])
-    nlp_model_de = load_spacy()
+    """Main Function to start
 
-    split_text_into_columns(nlp_model_de=nlp_model_de, df=df)
+    Returns:
+        Pandas DataFrame: parsed Dataframe
+    """
+    config_dict = read_configfile('config.json')
+    df = import_data(filepath=config_dict['DATA_INPUT_FILEPATH'])
+    nlp_models = load_spacy(language_models=['de_core_news_sm'])
 
-    return None
+    df_text_into_columns = split_text_into_columns(nlp_models=nlp_models, df=df)
+
+    return df_text_into_columns
 
 if __name__ == "__main__":
     main()
-
